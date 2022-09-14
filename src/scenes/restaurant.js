@@ -5,18 +5,24 @@ class restaurant extends Phaser.Scene {
 
     preload(){
         //menu bgm
-        this.load.audio('menu_bgm', './assets/t.wav');
+        this.load.audio('sfx', './assets/pickup.wav')
+
+        //pickup bgm
+        this.load.audio('menu_bgm','./assets/t.wav');
+
     }
 
     create() {
 
         //we need to make variables and stuff for collecting thee ingredients
-
+        //this.pick_up_music = this.sound.add('pickup', {mute: false, volume: 0.2, rate: 1, loop: false});
 
         //add background music
-        //this.music = this.sound.add('menu_bgm', {mute: false, volume: 1.0, rate: 1, loop: true});
-        //this.music.play();
-        
+        this.music = this.sound.add('menu_bgm', {mute: false, volume: 1.0, rate: 1, loop: true});
+        this.music.play();
+
+        this.sfx = this.sound.add('sfx', {mute: false, volume: 1.0, rate: 1, loop: false});   
+
         const gui = new dat.GUI();
 
         // variables and settings
@@ -27,18 +33,20 @@ class restaurant extends Phaser.Scene {
         this.recipeUnlocked = false;
         this.foodCounter = 0;
         this.gotFlour = false;
-        this.gotMilk = false;
-        this.gotEgg = false;
+        this.gotMilk = 0;
+        this.gotEgg = 0;
         this.gotSoda = false;
         this.gotSugar = false;
         this.gotPowder = false;
         this.gotSalt = false;
         this.gotVanilla = false;
+        this.block = this.add.group();
 
         //timer
         this.time = 0;
 
         // Set background color
+        
         this.cameras.main.setBackgroundColor('#666');
 
         // Set main camera to be 3 rooms wide, 2 rooms tall
@@ -57,7 +65,50 @@ class restaurant extends Phaser.Scene {
 
         // Add overworld background images
         //this.add.image(0, this.ROOMHEIGHT, 'LoZ-overworld-left').setOrigin(0);
-        this.add.image(this.ROOMWIDTH, this.ROOMHEIGHT, 'kitchenRotated').setOrigin(0);
+        this.invisBlock = this.physics.add.image(this.ROOMWIDTH*1.5, (this.ROOMHEIGHT*1.5)+50, 'invisBlock');
+         this.invisBlock.body.immovable = true;
+         this.invisBlock.body.allowGravity = false;
+        this.block.add(this.invisBlock);
+
+        this.invisBlock2 = this.physics.add.image(this.ROOMWIDTH*1.5-500, (this.ROOMHEIGHT*1.5)-200, 'invisBlock');
+         this.invisBlock2.body.immovable = true;
+         this.invisBlock2.body.allowGravity = false;
+        this.block.add(this.invisBlock2);
+
+        this.invisBlock3 = this.physics.add.image(this.ROOMWIDTH*1.5-500, (this.ROOMHEIGHT*1.5)-300, 'invisBlock');
+         this.invisBlock3.body.immovable = true;
+         this.invisBlock3.body.allowGravity = false;
+        this.block.add(this.invisBlock3);
+
+        this.invisBlock4 = this.physics.add.image(this.ROOMWIDTH*1.5+500, (this.ROOMHEIGHT*1.5)-300, 'invisBlock');
+         this.invisBlock4.body.immovable = true;
+         this.invisBlock4.body.allowGravity = false;
+        this.block.add(this.invisBlock4);
+
+        this.invisBlock5 = this.physics.add.image(this.ROOMWIDTH*1.5+500, (this.ROOMHEIGHT*1.5)-200, 'invisBlock');
+         this.invisBlock5.body.immovable = true;
+         this.invisBlock5.body.allowGravity = false;
+        this.block.add(this.invisBlock5);
+
+        this.invisBlock6 = this.physics.add.image(this.ROOMWIDTH*1.5-500, (this.ROOMHEIGHT*1.5)+200, 'invisBlock');
+         this.invisBlock6.body.immovable = true;
+         this.invisBlock6.body.allowGravity = false;
+        this.block.add(this.invisBlock6);
+        
+        this.invisBlock7 = this.physics.add.image(this.ROOMWIDTH*1.5+500, (this.ROOMHEIGHT*1.5)+200, 'invisBlock');
+         this.invisBlock7.body.immovable = true;
+         this.invisBlock7.body.allowGravity = false;
+        this.block.add(this.invisBlock7);
+
+        this.add.image(this.ROOMWIDTH, this.ROOMHEIGHT, 'restaurant').setOrigin(0);
+        
+        this.invisBlock8 = this.physics.add.image(this.ROOMWIDTH, (this.ROOMHEIGHT*1.5)+200, 'invisBlock2');
+         this.invisBlock8.body.immovable = true;
+         this.invisBlock8.body.allowGravity = false;
+        this.block.add(this.invisBlock8);
+        
+        
+        
         //this.add.image(this.ROOMWIDTH*2, this.ROOMHEIGHT, 'LoZ-overworld-right').setOrigin(0);
         //this.add.image(0, 0, 'LoZ-overworld-upleft').setOrigin(0);
         this.add.image(this.ROOMWIDTH, 0, 'kitchen').setOrigin(0);
@@ -77,40 +128,97 @@ class restaurant extends Phaser.Scene {
         this.anims.create({
             key: 'idle',
             frames: this.anims.generateFrameNumbers('idle', {frames: [0, 1]}),
-            framerate: 4,
+            frameRate: 4,
             repeat: -1
         });
 
         this.anims.create({
             key: 'walk_down',
             frames: this.anims.generateFrameNumbers('walk_down', {frames: [0, 1, 2, 3]}),
-            framerate: 8,
+            frameRate: 4,
             repeat: -1
         });
 
         this.anims.create({
             key: 'walk_left',
             frames: this.anims.generateFrameNumbers('walk_left', {frames: [0, 1, 2, 3]}),
-            framerate: 8,
+            framerate: 4,
             repeat: -1
         });
 
         this.anims.create({
             key: 'walk_right',
             frames: this.anims.generateFrameNumbers('walk_right', {frames: [0, 1, 2, 3]}),
-            framerate: 8,
+            frameRate: 4,
             repeat: -1
         });
 
         this.anims.create({
             key: 'walk_up',
             frames: this.anims.generateFrameNumbers('walk_up', {frames: [0, 1, 2, 3]}),
-            framerate: 8,
+            frameRate: 4,
             repeat: -1
         });
+        this.anims.create({
+            key: 'milk',
+            frames: this.anims.generateFrameNumbers('milk', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'egg',
+            frames: this.anims.generateFrameNumbers('egg', {frames: [0, 1, 2]}),
+            framerate: 3,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'salt',
+            frames: this.anims.generateFrameNumbers('salt', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'soda',
+            frames: this.anims.generateFrameNumbers('soda', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'vanilla',
+            frames: this.anims.generateFrameNumbers('vanilla', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'flour',
+            frames: this.anims.generateFrameNumbers('flour', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'bp',
+            frames: this.anims.generateFrameNumbers('bp', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        this.anims.create({
+            key: 'sugar',
+            frames: this.anims.generateFrameNumbers('sugar', {frames: [0, 1, 2, 3]}),
+            framerate: 4,
+            repeat: 0
+        });
+
+        
 
         //make collision group
-        this.block = this.add.group();
+        
 
         //make collision blocks
         // this.solidBlock = this.physics.add.image(this.ROOMWIDTH-this.player.displayWidth/2, this.ROOMHEIGHT-this.player.displayHeight/2, 'block').setOrigin(0);
@@ -124,7 +232,7 @@ class restaurant extends Phaser.Scene {
         // this.block.add(this.solidBlock2);
 
         //this.recipeCollide = this.add.group();
-        this.recipe = this.physics.add.image(this.ROOMWIDTH*1.5, (this.ROOMHEIGHT*1.5)+65, 'chef').setScale(this.AVATAR_SCALE);
+        this.recipe = this.physics.add.image(this.ROOMWIDTH*1.5, (this.ROOMHEIGHT*1.5)+235, 'chef').setScale(this.AVATAR_SCALE);
          this.recipe.body.immovable = true;
          this.recipe.body.allowGravity = false;
         //this.recipeCollide.add(this.recipe);
@@ -140,10 +248,10 @@ class restaurant extends Phaser.Scene {
         this.block.add(this.longWall);
 
         
-        this.longWall2 = this.physics.add.image(this.ROOMWIDTH*1.5, (this.ROOMHEIGHT*1.5)+150, 'longWall');
-        this.longWall2.body.immovable = true;
-        this.longWall2.body.allowGravity = false;
-        this.block.add(this.longWall2);
+        // this.longWall2 = this.physics.add.image(this.ROOMWIDTH*1.5, (this.ROOMHEIGHT*1.5)+150, 'longWall');
+        // this.longWall2.body.immovable = true;
+        // this.longWall2.body.allowGravity = false;
+        // this.block.add(this.longWall2);
 
         this.eggFridge = this.physics.add.image(this.ROOMWIDTH*1.5, this.ROOMWIDTH*.05+200, 'eggFridge');
         this.eggFridge.body.immovable = true;
@@ -153,6 +261,9 @@ class restaurant extends Phaser.Scene {
         this.eggFridge2 = this.physics.add.image(this.ROOMWIDTH*1.5, this.ROOMWIDTH*.05+201, 'eggFridge');
         this.eggFridge2.body.immovable = true;
         this.eggFridge2.body.allowGravity = false;
+
+        this.egg = this.physics.add.sprite(this.ROOMWIDTH*1.5, this.ROOMWIDTH*.05+201, 'egg').setScale(this.AVATAR_SCALE);
+        this.egg.visible = false;
         
 
 
@@ -165,6 +276,10 @@ class restaurant extends Phaser.Scene {
         this.milkFridge2.body.immovable = true;
         this.milkFridge2.body.allowGravity = false;
 
+        this.milk = this.physics.add.sprite(this.ROOMWIDTH*1.5+200, this.ROOMWIDTH*.05+201, 'milk').setScale(this.AVATAR_SCALE);
+        this.milk.visible = false;
+
+
         this.flourFridge = this.physics.add.image(this.ROOMWIDTH*1.5+400, this.ROOMWIDTH*.05+400, 'flourFridge');
         this.flourFridge.body.immovable = true;
         this.flourFridge.body.allowGravity = false;
@@ -173,6 +288,9 @@ class restaurant extends Phaser.Scene {
         this.flourFridge2 = this.physics.add.image(this.ROOMWIDTH*1.5+400, this.ROOMWIDTH*.05+401, 'flourFridge');
         this.flourFridge2.body.immovable = true;
         this.flourFridge2.body.allowGravity = false;
+
+        this.flour = this.physics.add.sprite(this.ROOMWIDTH*1.5+400, this.ROOMWIDTH*.05+401, 'flour').setScale(this.AVATAR_SCALE);
+        this.flour.visible = false;
 
         this.sugarFridge = this.physics.add.image(this.ROOMWIDTH+200, this.ROOMWIDTH*.05+400, 'sugarFridge');
         this.sugarFridge.body.immovable = true;
@@ -183,6 +301,9 @@ class restaurant extends Phaser.Scene {
         this.sugarFridge2.body.immovable = true;
         this.sugarFridge2.body.allowGravity = false;
 
+        this.sugar = this.physics.add.sprite(this.ROOMWIDTH+200, this.ROOMWIDTH*.05+401, 'sugar').setScale(this.AVATAR_SCALE);
+        this.sugar.visible = false;
+
         this.sodaFridge = this.physics.add.image(this.ROOMWIDTH+100, this.ROOMWIDTH*.05+200, 'sodaFridge');
         this.sodaFridge.body.immovable = true;
         this.sodaFridge.body.allowGravity = false;
@@ -191,6 +312,9 @@ class restaurant extends Phaser.Scene {
         this.sodaFridge2 = this.physics.add.image(this.ROOMWIDTH+100, this.ROOMWIDTH*.05+201, 'sodaFridge');
         this.sodaFridge2.body.immovable = true;
         this.sodaFridge2.body.allowGravity = false;
+
+        this.soda = this.physics.add.sprite(this.ROOMWIDTH+100, this.ROOMWIDTH*.05+201, 'soda').setScale(this.AVATAR_SCALE);
+        this.soda.visible = false;
 
         this.powderFridge = this.physics.add.image(this.ROOMWIDTH+200, this.ROOMWIDTH*.05+200, 'powderFridge');
         this.powderFridge.body.immovable = true;
@@ -201,24 +325,32 @@ class restaurant extends Phaser.Scene {
         this.powderFridge2.body.immovable = true;
         this.powderFridge2.body.allowGravity = false;
 
-        this.saltFridge = this.physics.add.image(this.ROOMWIDTH*1.5-400, (this.ROOMHEIGHT*1.5)-200, 'saltFridge');
+        this.bp = this.physics.add.sprite(this.ROOMWIDTH+200, this.ROOMWIDTH*.05+201, 'bp').setScale(this.AVATAR_SCALE);
+        this.bp.visible = false;
+
+        this.saltFridge = this.physics.add.image(this.ROOMWIDTH+300, this.ROOMHEIGHT*.05+200, 'saltFridge');
         this.saltFridge.body.immovable = true;
         this.saltFridge.body.allowGravity = false;
         this.block.add(this.saltFridge);
 
-        this.saltFridge2 = this.physics.add.image(this.ROOMWIDTH*1.5-400, (this.ROOMHEIGHT*1.5)-199, 'saltFridge');
+        this.saltFridge2 = this.physics.add.image(this.ROOMWIDTH+300, this.ROOMHEIGHT*.05+201, 'saltFridge');
         this.saltFridge2.body.immovable = true;
         this.saltFridge2.body.allowGravity = false;
 
-        this.vanillaFridge = this.physics.add.image(this.ROOMWIDTH*1.5+400, (this.ROOMHEIGHT*1.5)-150, 'vanillaFridge');
+        this.salt = this.physics.add.sprite(this.ROOMWIDTH+300, this.ROOMWIDTH*.05+201, 'salt').setScale(this.AVATAR_SCALE);
+        this.salt.visible = false;
+
+        this.vanillaFridge = this.physics.add.image(this.ROOMWIDTH+900, (this.ROOMHEIGHT*.05)+200, 'vanillaFridge');
         this.vanillaFridge.body.immovable = true;
         this.vanillaFridge.body.allowGravity = false;
         this.block.add(this.vanillaFridge);
 
-        this.vanillaFridge2 = this.physics.add.image(this.ROOMWIDTH*1.5+400, (this.ROOMHEIGHT*1.5)-149, 'vanillaFridge');
+        this.vanillaFridge2 = this.physics.add.image(this.ROOMWIDTH+900, (this.ROOMHEIGHT*.05)+201, 'vanillaFridge');
         this.vanillaFridge2.body.immovable = true;
         this.vanillaFridge2.body.allowGravity = false;
         
+        this.vanilla = this.physics.add.sprite(this.ROOMWIDTH+900, (this.ROOMWIDTH*.05)+201, 'vanilla').setScale(this.AVATAR_SCALE);
+        this.vanilla.visible = false;
        
        
         this.collided = false;
@@ -281,29 +413,37 @@ class restaurant extends Phaser.Scene {
 
         //instructions
         let scoreConfig = {
-            fontFamily: 'serif',
-            fontSize: '16px',
-            backgroundColor: '#ADD8E6',
-            color: '#000000',
+            fontFamily: 'Pangolin',
+            fontSize: '20px',
+            color: '#F8B88B',
             align: 'right',
+            stroke: '#FF6700',
+            strokeThickness: 6, 
+            fixedWidth: 0,
+
+            // fontFamily: 'serif',
+            // fontSize: '16px',
+            // backgroundColor: '#ADD8E6',
+            // color: '#000000',
+            // align: 'right',
             padding: {
                 top: 10,
                 bottom: 10,
-            },
-            //fixedWidth: 
+            }, 
         }
-        this.add.text(this.ROOMWIDTH*1.5-300, this.ROOMHEIGHT*1.5+300, 'collide with blue block to get recipe, SPACEBAR to pour ingredients once you are done collecting', scoreConfig);
+        this.add.text(this.ROOMWIDTH*1.5 - 450, this.ROOMHEIGHT*1.5 + 250, 'collide with Gorgon to get recipe, SPACEBAR to pour ingredients once you are done collecting. Stand in front and SPACEBAR', scoreConfig);
         
         
         //timer for the player
         scoreConfig.color = '#FFFF00';
         //this.time = data;
         this.currentTime = this.add.text(this.ROOMWIDTH+20, this.ROOMHEIGHT+20, this.time, scoreConfig);
+        this.currentTime2 = this.add.text(this.ROOMWIDTH+20, this.ROOMHEIGHT*.05+20, this.time, scoreConfig);
         
             
-        this.recipe1 = this.add.text(this.ROOMWIDTH*1.5-300, this.ROOMHEIGHT*1.5, "Follow this Vanilla Cake Recipe:", scoreConfig)
-        this.recipe2 = this.add.text(this.ROOMWIDTH*1.5-300, this.ROOMHEIGHT*1.5+50, "1x milk\n1x flour\n1x egg\n1x salt\n1x vanilla\n1x milk\n1x sugar\n1x soda\n1x powder", scoreConfig)
-        this.recipe3 = this.add.text(this.ROOMWIDTH*1.5-250, this.ROOMHEIGHT*1.5+250, "Press 'z' to back", scoreConfig).setOrigin(0.5)
+        this.recipe1 = this.add.text(this.ROOMWIDTH*1.5-300, this.ROOMHEIGHT*1.5-20, "Follow this Vanilla Cake Recipe:", scoreConfig)
+        this.recipe2 = this.add.text(this.ROOMWIDTH*1.5-300, this.ROOMHEIGHT*1.5+50, "2x milk\n1x flour\n2x egg\n1x salt\n1x vanilla\n1x milk\n1x sugar\n1x soda\n1x powder", scoreConfig)
+        this.recipe3 = this.add.text(this.ROOMWIDTH*1.5-200, this.ROOMHEIGHT*1.5+30, "Press 'z' to back", scoreConfig).setOrigin(0.5)
         this.recipe1.visible = false;
             this.recipe2.visible = false;
             this.recipe3.visible = false;
@@ -314,21 +454,24 @@ class restaurant extends Phaser.Scene {
         //increase timer
         this.time += delta;
         this.currentTime.text = (this.time/1000).toFixed(2);
+        this.currentTime2.text = (this.time/1000).toFixed(2);
             
                 
 
         this.player.anims.play('idle');
 
         let scoreConfig = {
-            fontFamily: 'serif',
-            fontSize: '16px',
-            backgroundColor: '#ADD8E6',
-            color: '#000000',
+            fontFamily: 'Pangolin',
+            fontSize: '20px',
+            color: '#F8B88B',
             align: 'right',
+            stroke: '#FF6700',
+            strokeThickness: 6, 
+            fixedWidth: 0,
             padding: {
                 top: 10,
                 bottom: 10,
-            },
+            }, 
             //fixedWidth: 
         }
 
@@ -342,7 +485,7 @@ class restaurant extends Phaser.Scene {
         
         else if(cursors.right.isDown) {
             this.player.body.setVelocity(this.VELOCITY, 0);
-            this.player.anims.play('walk_right');
+           this.player.anims.play('walk_right');
 
         } else if(cursors.up.isDown) {
             this.player.body.setVelocity(0, -this.VELOCITY);
@@ -370,52 +513,101 @@ class restaurant extends Phaser.Scene {
         }
 
         //create some kind of counter to track the player's ingredients collected
-        if(this.physics.overlap(this.player, this.milkFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotMilk == false){
+        if(this.physics.overlap(this.player, this.milkFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotMilk != 2){
             console.log("Got the milk");
             this.foodCounter += 1;
-            this.gotMilk = true;
+            this.gotMilk += 1;
+            this.milk.visible = true;
+            this.milk.anims.play('milk');
+            this.milk.once('animationcomplete', () => {
+                this.milk.visible = false;
+            })
+           // this.milk.visible = false;
+            this.sfx.play();
         }
 
-        if(this.physics.overlap(this.player, this.eggFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotEgg == false){
+        if(this.physics.overlap(this.player, this.eggFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotEgg != 2){
             console.log("Got the egg");
             this.foodCounter += 1;
-            this.gotEgg = true;
+            this.gotEgg += 1;
+            this.egg.visible = true;
+            this.egg.anims.play('egg');
+            this.egg.once('animationcomplete', () => {
+                this.egg.visible = false;
+            })
+            this.sfx.play();
         }
 
         if(this.physics.overlap(this.player, this.flourFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotFlour == false){
             console.log("Got the Flour");
             this.foodCounter += 1;
             this.gotFlour = true;
+            this.flour.visible = true;
+            this.flour.anims.play('flour');
+            this.flour.once('animationcomplete', () => {
+                this.flour.visible = false;
+            })
+            this.sfx.play();
         }
 
         if(this.physics.overlap(this.player, this.sugarFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotSugar == false){
             console.log("Got the Sugar");
             this.foodCounter += 1;
             this.gotSugar = true;
+            this.sugar.visible = true;
+            this.sugar.anims.play('sugar');
+            this.sugar.once('animationcomplete', () => {
+                this.sugar.visible = false;
+            })
+            this.sfx.play();
         }
 
         if(this.physics.overlap(this.player, this.powderFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotPowder == false){
             console.log("Got the Powder");
             this.foodCounter += 1;
             this.gotPowder = true;
+            this.bp.visible = true;
+            this.bp.anims.play('bp');
+            this.bp.once('animationcomplete', () => {
+                this.bp.visible = false;
+            })
+            this.sfx.play();
         }
 
         if(this.physics.overlap(this.player, this.sodaFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotSoda == false){
             console.log("Got the soda");
             this.foodCounter += 1;
             this.gotSoda = true;
+            this.soda.visible = true;
+            this.soda.anims.play('soda');
+            this.soda.once('animationcomplete', () => {
+                this.soda.visible = false;
+            })
+            this.sfx.play();
         }
 
         if(this.physics.overlap(this.player, this.saltFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotSalt == false){
             console.log("Got the salt");
             this.foodCounter += 1;
             this.gotSalt = true;
+            this.salt.visible = true;
+            this.salt.anims.play('salt');
+            this.salt.once('animationcomplete', () => {
+                this.salt.visible = false;
+            })
+            this.sfx.play();
         }
 
         if(this.physics.overlap(this.player, this.vanillaFridge2)  && Phaser.Input.Keyboard.JustDown(keySPACE) && this.gotVanilla == false){
             console.log("Got the vanilla");
             this.foodCounter += 1;
             this.gotVanilla = true;
+            this.vanilla.visible = true;
+            this.vanilla.anims.play('vanilla');
+            this.vanilla.once('animationcomplete', () => {
+                this.vanilla.visible = false;
+            })
+            this.sfx.play();
         }
         
         if(this.physics.overlap(this.player, this.recipe)){
@@ -451,8 +643,8 @@ class restaurant extends Phaser.Scene {
             this.recipeUnlocked = true;
         }
 
-        if (Phaser.Input.Keyboard.JustDown(keySPACE) && this.foodCounter == 8) {
-            //this.music.stop();
+        if (this.foodCounter == 10) {
+            this.music.stop();
             this.scene.start('ingredientsScene', this.time);
         }
 

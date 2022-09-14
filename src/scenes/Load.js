@@ -22,6 +22,12 @@ class Load extends Phaser.Scene {
         this.load.image('kitchenTable', 'kitchenTable.png');
         this.load.image('kitchenRotated', 'kitchenRotated.png');
         this.load.image('longWall', 'longwall.png');
+        this.load.image('restaurant', 'restaurant.png');
+        this.load.image('invisBlock', 'invisBlock.png');
+        this.load.image('invisBlock2', 'highBlock.png');
+
+        this.load.audio('bgm', 'bgm.mp3');
+
         
         //character
         this.load.spritesheet('idle', 'idle.png', {frameWidth: 256, frameHeight: 256, startFrame: 0, endFrame: 1});
@@ -39,6 +45,10 @@ class Load extends Phaser.Scene {
         this.load.spritesheet('stir', 'stir.png', {frameWidth: 256, frameHeight: 256, startFrame: 1, endFrame: 5});
         this.load.spritesheet('egg', 'egg.png', {frameWidth: 256, frameHeight: 256, startFrame: 0, endFrame: 2});
         this.load.spritesheet('milk', 'milk.png', {frameWidth: 256, frameHeight: 256, startFrame: 0, endFrame: 3});
+        this.load.spritesheet('flour', 'flour.png', {frameWidth: 256, frameHeight: 256, startFrame: 0, endFrame: 3});
+        this.load.spritesheet('sugar', 'sugar.png', {frameWidth: 256, frameHeight: 256, startFrame: 0, endFrame: 3});
+
+
 
         //restaurant scene
         this.load.image('eggFridge', 'eggFridge.png');
@@ -68,6 +78,7 @@ class Load extends Phaser.Scene {
 
     create() {
         // ...and pass to the next Scene
+        
         this.scene.start('restaurantScene');
     }
 }

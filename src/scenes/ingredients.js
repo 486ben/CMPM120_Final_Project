@@ -14,6 +14,8 @@ class ingredients extends Phaser.Scene{
     create(data){
         this.count=0;
         this.score=0;
+        this.music = this.sound.add('menu_bgm', {mute: false, volume: 1.0, rate: 1, loop: true});
+        this.music.play();
         
         this.AVATAR_SCALE = 0.25;
         this.ROOMWIDTH = 1024;
@@ -21,16 +23,17 @@ class ingredients extends Phaser.Scene{
 
         //config for texts
         let scoreConfig = {
-            fontFamily: 'serif',
-            fontSize: '16px',
-            backgroundColor: '#ADD8E6',
-            color: '#000000',
+            fontFamily: 'Pangolin',
+            fontSize: '20px',
+            color: '#F8B88B',
             align: 'right',
+            stroke: '#FF6700',
+            strokeThickness: 6, 
+            fixedWidth: 0,
             padding: {
                 top: 10,
                 bottom: 10,
-            },
-            //fixedWidth: 
+            }, 
         }
 
         // this.anims.create({
@@ -43,7 +46,7 @@ class ingredients extends Phaser.Scene{
 
         this.add.image(this.ROOMWIDTH, 0,'temp_bg').setOrigin(0);
         //game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.scoreText=this.add.text(20,20,'SCORE:0', scoreConfig);
+        //this.scoreText=this.add.text(20,20,'SCORE:0', scoreConfig);
         this.cashier=this.physics.add.sprite(config.width/2, config.height/2,'stir');
         this.cashier.body.immovable =true;
         
@@ -60,36 +63,42 @@ class ingredients extends Phaser.Scene{
         
         this.salt=this.physics.add.image(200,50,'salt').setScale(this.AVATAR_SCALE).setInteractive({draggable: true});
 
-        this.butter=this.physics.add.image(200,50,'butter').setScale(this.AVATAR_SCALE).setInteractive({draggable: true});
+        this.food2=this.physics.add.image(200,50,'milk').setScale(this.AVATAR_SCALE).setInteractive({draggable: true});
+
+        this.fruit2=this.physics.add.image(200,50,'egg').setScale(this.AVATAR_SCALE).setInteractive({draggable: true});
         
         
-        this.fruit.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.fruit.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.fruit.setBounce(1,1);
         this.fruit.setCollideWorldBounds(true);
         
-        this.food.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.food.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.food.setBounce(1,1);
         this.food.setCollideWorldBounds(true);
 
-        this.vanilla.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.fruit2.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
+        this.fruit2.setBounce(1,1);
+        this.fruit2.setCollideWorldBounds(true);
+        
+        this.food2.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
+        this.food2.setBounce(1,1);
+        this.food2.setCollideWorldBounds(true);
+
+        this.vanilla.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.vanilla.setBounce(1,1);
         this.vanilla.setCollideWorldBounds(true);
 
-        this.bp.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.bp.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.bp.setBounce(1,1);
         this.bp.setCollideWorldBounds(true);
 
-        this.soda.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.soda.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.soda.setBounce(1,1);
         this.soda.setCollideWorldBounds(true);
 
-        this.salt.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.salt.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.salt.setBounce(1,1);
         this.salt.setCollideWorldBounds(true);
-
-        this.butter.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
-        this.butter.setBounce(1,1);
-        this.butter.setCollideWorldBounds(true);
 
         //animation
         this.anims.create({
@@ -138,10 +147,12 @@ class ingredients extends Phaser.Scene{
         this.physics.add.collider(this.fruit,this.cashier);
         this.physics.add.collider(this.food,this.cashier);
         this.physics.add.collider(this.salt,this.cashier);
-        this.physics.add.collider(this.butter,this.cashier);
+        //this.physics.add.collider(this.butter,this.cashier);
         this.physics.add.collider(this.vanilla,this.cashier);
         this.physics.add.collider(this.bp,this.cashier);
         this.physics.add.collider(this.soda,this.cashier);
+        this.physics.add.collider(this.fruit2,this.cashier);
+        this.physics.add.collider(this.food2,this.cashier);
         
         
         
@@ -152,7 +163,6 @@ class ingredients extends Phaser.Scene{
         
 
         this.add.text(200,150, 'drag and drop the ingredients.',scoreConfig);
-        this.add.text(200,200, 'Press Space to stir the ingredients or z to go back',scoreConfig);
 
         
         //this.cashier=this.add.image(0,0,'character');
@@ -178,9 +188,18 @@ class ingredients extends Phaser.Scene{
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+           //this.scoreText.setText('SCORE:'+this.count);
            
            this.fruit.destroy();
+        }, null, this);
+
+        this.physics.add.overlap(this.fruit2, this.cashier, function (fruit2, cashier) {
+            
+            //cashier.destroy();
+            this.count++;
+           //this.scoreText.setText('SCORE:'+this.count);
+           
+           this.fruit2.destroy();
         }, null, this);
 
         this.physics.add.overlap(this.food, this.cashier, function (food, cashier) {
@@ -188,8 +207,19 @@ class ingredients extends Phaser.Scene{
             //cashier.destroy();
             this.count++;
             //this.food.anims.play('milk');
-           this.scoreText.setText('SCORE:'+this.count);
+           //this.scoreText.setText('SCORE:'+this.count);
            this.food.destroy();
+           //this.food.setVelocity(0,0);
+           
+        }, null, this);
+
+        this.physics.add.overlap(this.food2, this.cashier, function (food2, cashier) {
+            
+            //cashier.destroy();
+            this.count++;
+            //this.food.anims.play('milk');
+           //this.scoreText.setText('SCORE:'+this.count);
+           this.food2.destroy();
            //this.food.setVelocity(0,0);
            
         }, null, this);
@@ -198,25 +228,25 @@ class ingredients extends Phaser.Scene{
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+          // this.scoreText.setText('SCORE:'+this.count);
            
            this.salt.destroy();
         }, null, this);
 
-        this.physics.add.overlap(this.butter, this.cashier, function (butter, cashier) {
+        // this.physics.add.overlap(this.butter, this.cashier, function (butter, cashier) {
             
-            //cashier.destroy();
-            this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+        //     //cashier.destroy();
+        //     this.count++;
+        //   // this.scoreText.setText('SCORE:'+this.count);
            
-           this.butter.destroy();
-        }, null, this);
+        //    this.butter.destroy();
+        // }, null, this);
 
         this.physics.add.overlap(this.bp, this.cashier, function (bp, cashier) {
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+         //  this.scoreText.setText('SCORE:'+this.count);
            
            this.bp.destroy();
         }, null, this);
@@ -225,7 +255,7 @@ class ingredients extends Phaser.Scene{
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+          // this.scoreText.setText('SCORE:'+this.count);
            
            this.soda.destroy();
         }, null, this);
@@ -234,17 +264,15 @@ class ingredients extends Phaser.Scene{
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+         //  this.scoreText.setText('SCORE:'+this.count);
            
            this.vanilla.destroy();
         }, null, this);
 
 
-        if(Phaser.Input.Keyboard.JustDown(keySPACE) && this.count == 7){
+        if(this.count == 8){
+            this.music.stop();
             this.scene.start('stirScene', this.time);
-        }
-        if(Phaser.Input.Keyboard.JustDown(keyZ)){
-            this.scene.start('restaurantScene');
         }
     }
     reset(){

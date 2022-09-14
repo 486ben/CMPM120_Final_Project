@@ -8,7 +8,7 @@ class Rule4 extends Phaser.Scene {
         // load music audio
         // this.load.image('menucreator', './assets/intro1.png');
         //image
-        this.load.image('cake', './assets/CakedecorResized.png');
+        this.load.image('Cake', './assets/CakedecorResized.png');
 
         //load the background image.
         this.load.image('kitchenBackground', './assets/kitchenTable.png');
@@ -54,13 +54,13 @@ class Rule4 extends Phaser.Scene {
         let centerY = game.config.height / 2;
 
         //First Step
-        this.add.text(centerX, centerY -120, 'Third Step: Design Your Own Cake', titleConfig).setOrigin(0.5);
-        this.add.text(centerX, centerY -90, 'Now you have a perfect cake, but it is not finish yet', text1Config).setOrigin(0.5);
-        this.add.text(centerX, centerY - 60, 'Based on the customer requirement, you need to decorate the cake by add candy, flower.', text1Config).setOrigin(0.5);
-        this.add.text(centerX, centerY - 30, 'You will get a rating for what you made to master the skills of Bake.', text1Config).setOrigin(0.5);
+        this.add.text(centerX, centerY -120, 'Third Step: Design the Cake', titleConfig).setOrigin(0.5);
+        this.add.text(centerX, centerY -90, 'Now you have a nice cake, but it is not finished yet', text1Config).setOrigin(0.5);
+        this.add.text(centerX, centerY - 60, 'You need to decorate the cake by dragging and dropping them on the cake.', text1Config).setOrigin(0.5);
+        this.add.text(centerX, centerY - 30, 'Lastly, you will get a rating from Chef Master based on how well you impressed him!', text1Config).setOrigin(0.5);
         this.add.text(centerX, centerY, 'Good Luck! Enjoy the game!', text1Config).setOrigin(0.5);
 
-        this.add.image(centerX, centerY +130, 'cake').setOrigin(0.5);
+        this.add.image(centerX, centerY +130, 'Cake').setOrigin(0.5);
 
         //type space for next rule
         this.add.text(centerX, centerY + 300, '[ Press (SPACE) for menu and Start the Game ]', creditConfig).setOrigin(0.5);

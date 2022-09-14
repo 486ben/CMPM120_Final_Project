@@ -1,23 +1,18 @@
 class Talking extends Phaser.Scene {
     constructor() {
         super("talkingScene");
-
         // dialog constants
         this.DBOX_X = 0;			    // dialog box x-position
         this.DBOX_Y = 400;			    // dialog box y-position
         this.DBOX_FONT = 'gem_font';	// dialog box font key
-
         this.TEXT_X = 50;			// text w/in dialog box x-position
         this.TEXT_Y = 445;			// text w/in dialog box y-position
         this.TEXT_SIZE = 24;		// text font size (in pixels)
         this.TEXT_MAX_WIDTH = 715;	// max width of text within box
-
         this.NEXT_TEXT = '[SPACE]';	// text to display for next prompt
         this.NEXT_X = 775;			// next text prompt x-position
         this.NEXT_Y = 574;			// next text prompt y-position
-
         this.LETTER_TIMER = 10;		// # ms each letter takes to "type" onscreen
-
         // dialog variables
         this.dialogConvo = 0;			// current "conversation"
         this.dialogLine = 0;			// current line of conversation
@@ -26,72 +21,60 @@ class Talking extends Phaser.Scene {
         this.dialogTyping = false;		// flag to lock player input while text is "typing"
         this.dialogText = null;			// the actual dialog text
         this.nextText = null;			// player prompt text to continue typing
+        this.dialogEnd = false;
 
         // character variables
-        this.Jim = null;
+        this.Gorgon = null;
         this.You = null;
-
         this.tweenDuration = 500;
-
         this.OFFSCREEN_X = -500;        // x,y values to place characters offscreen
         this.OFFSCREEN_Y = 1000;
     }
-
     preload(){
         //load the background
         this.load.image('kitchen','./assets/kitchen.png');
-        this.load.image('kitchenBackground', './assets/kitchentable.png');
+        this.load.image('kitchenBackground', './assets/kitchenTable.png');
     }
-
     create() {
-
         //load the image
         this.add.tileSprite(0, 0, 1200, 700, 'kitchen').setOrigin(0, 0);
         this.add.tileSprite(0, 0, 1200, 700, 'kitchenBackground').setOrigin(0, 0);
-
         // parse dialog from JSON file
         this.dialog = this.cache.json.get('dialog');
         //console.log(this.dialog);
-
         // add dialog box sprite
         this.dialogbox = this.add.sprite(this.DBOX_X, this.DBOX_Y, 'dialogbox').setOrigin(0);
-
         // initialize dialog text objects (with no text)
         this.dialogText = this.add.bitmapText(this.TEXT_X, this.TEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
         this.nextText = this.add.bitmapText(this.NEXT_X, this.NEXT_Y, this.DBOX_FONT, '', this.TEXT_SIZE);
-
         // ready the character dialog images offscreen
-        this.Jim = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'Jim').setOrigin(0, 1);
+        this.Gorgon = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'Gorgon').setOrigin(0, 1);
         this.You = this.add.sprite(this.OFFSCREEN_X, this.DBOX_Y+8, 'You').setOrigin(0, 1);
-
         // start dialog
         this.typeText();   
-
         // Use Phaser-provided cursor key creation function
         cursors = this.input.keyboard.createCursorKeys();
         //key
         keyS = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-    }
+        keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
+    }
     update() {
         // check for spacebar press
         if(Phaser.Input.Keyboard.JustDown(cursors.space) && !this.dialogTyping) {
             // trigger dialog
             this.typeText();
         }
-        if(Phaser.Input.Keyboard.JustDown(keyS) && !this.dialogTyping) {
+        if((Phaser.Input.Keyboard.JustDown(keyS) || Phaser.Input.Keyboard.JustDown(keySPACE)) && (!this.dialogTyping || this.dialogEnd == true)) {
             this.scene.start("loadScene");
         }
     }
-
     typeText() {
         // lock input while typing
         this.dialogTyping = true;
-
         // clear text
         this.dialogText.text = '';
         this.nextText.text = '';
-
         /* Note: In my conversation data structure: 
                 - each array within the main JSON array is a "conversation"
                 - each object within a "conversation" is a "line"
@@ -100,7 +83,6 @@ class Talking extends Phaser.Scene {
                     2. the dialog text (required)
                     3. an (optional) flag indicating if this speaker is new
         */
-
         // make sure there are lines left to read in this convo, otherwise jump to next convo
         if(this.dialogLine > this.dialog[this.dialogConvo].length - 1) {
             this.dialogLine = 0;
@@ -113,6 +95,7 @@ class Talking extends Phaser.Scene {
             // here I'm simply "exiting" the last speaker and removing the dialog box,
             // but you could build other logic to change game states here
             console.log('End of Conversations');
+            this.dialogEnd = true;
             // tween out prior speaker's image
             if(this.dialogLastSpeaker) {
                 this.tweens.add({
@@ -124,7 +107,6 @@ class Talking extends Phaser.Scene {
             }
             // make text box invisible
             this.dialogbox.visible = false;
-
         } else {
             // if not, set current speaker
             this.dialogSpeaker = this.dialog[this.dialogConvo][this.dialogLine]['speaker'];
@@ -147,10 +129,8 @@ class Talking extends Phaser.Scene {
                     ease: 'Linear'
                 });
             }
-
             // build dialog (concatenate speaker + line of text)
             this.dialogLines = this.dialog[this.dialogConvo][this.dialogLine]['speaker'].toUpperCase() + ': ' + this.dialog[this.dialogConvo][this.dialogLine]['dialog'];
-
             // create a timer to iterate through each letter in the dialog text
             let currentChar = 0; 
             this.textTimer = this.time.addEvent({
@@ -177,10 +157,8 @@ class Talking extends Phaser.Scene {
             
             // set bounds on dialog
             this.dialogText.maxWidth = this.TEXT_MAX_WIDTH;
-
             // increment dialog line
             this.dialogLine++;
-
             // set past speaker
             this.dialogLastSpeaker = this.dialogSpeaker;
         }

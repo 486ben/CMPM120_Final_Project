@@ -1,11 +1,14 @@
 class decorating extends Phaser.Scene{
     constructor(){
-        super("decoratingScene");
+        super("decoratingScene");    
     }
+    
     
     create(data){
         this.count=0;
         this.score=0;
+        this.music = this.sound.add('menu_bgm', {mute: false, volume: 1.0, rate: 1, loop: true});
+        this.music.play();
         
         this.AVATAR_SCALE = 0.25;
         this.ROOMWIDTH = 1024;
@@ -13,15 +16,17 @@ class decorating extends Phaser.Scene{
 
         //config for texts
         let scoreConfig = {
-            fontFamily: 'serif',
-            fontSize: '16px',
-            backgroundColor: '#ADD8E6',
-            color: '#000000',
+            fontFamily: 'Pangolin',
+            fontSize: '20px',
+            color: '#F8B88B',
             align: 'right',
+            stroke: '#FF6700',
+            strokeThickness: 6, 
+            fixedWidth: 0,
             padding: {
                 top: 10,
                 bottom: 10,
-            },
+            }, 
             //fixedWidth: 
         }
 
@@ -35,8 +40,8 @@ class decorating extends Phaser.Scene{
 
         this.add.image(this.ROOMWIDTH, 0,'temp_bg').setOrigin(0);
         //game.physics.startSystem(Phaser.Physics.ARCADE);
-        this.scoreText=this.add.text(20,20,'SCORE:0', scoreConfig);
-        this.cashier=this.physics.add.sprite(config.width/2, config.height/2,'cake');
+        //this.scoreText=this.add.text(20,20,'SCORE:0', scoreConfig);
+        this.cashier=this.physics.add.sprite(config.width/2, config.height/2, 'cake');
         this.cashier.body.immovable =true;
         
         //adding ingredient images
@@ -52,27 +57,27 @@ class decorating extends Phaser.Scene{
         
         this.salt=this.physics.add.image(200,50,'candle').setInteractive({draggable: true});
                 
-        this.fruit.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.fruit.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.fruit.setBounce(1,1);
         this.fruit.setCollideWorldBounds(true);
         
-        this.food.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.food.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.food.setBounce(1,1);
         this.food.setCollideWorldBounds(true);
 
-        this.vanilla.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.vanilla.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.vanilla.setBounce(1,1);
         this.vanilla.setCollideWorldBounds(true);
 
-        this.bp.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.bp.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.bp.setBounce(1,1);
         this.bp.setCollideWorldBounds(true);
 
-        this.soda.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.soda.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.soda.setBounce(1,1);
         this.soda.setCollideWorldBounds(true);
 
-        this.salt.setVelocity(Phaser.Math.Between(0, 500),Phaser.Math.Between(0, 500));
+        this.salt.setVelocity(Phaser.Math.Between(0, 200),Phaser.Math.Between(0, 200));
         this.salt.setBounce(1,1);
         this.salt.setCollideWorldBounds(true);
 
@@ -97,7 +102,7 @@ class decorating extends Phaser.Scene{
     //this.input.setDraggable(this.fruit);
 
     //  The pointer has to move 16 pixels before it's considered as a drag
-    this.input.dragDistanceThreshold = 16;
+    //this.input.dragDistanceThreshold = 16;
 
     this.input.on('dragstart', function (pointer, gameObject) {
 
@@ -138,7 +143,6 @@ class decorating extends Phaser.Scene{
         
 
         this.add.text(200,150, 'drag and drop the ingredients.',scoreConfig);
-        this.add.text(200,200, 'Press Space to stir the ingredients or z to go back',scoreConfig);
 
         
         //this.cashier=this.add.image(0,0,'character');
@@ -163,10 +167,14 @@ class decorating extends Phaser.Scene{
         this.physics.add.overlap(this.fruit, this.cashier, function (fruit, cashier) {
             
             //cashier.destroy();
-            this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
-           
+           // console.log(this._fruit); 
+           this.count++;
+           //this.fruit.destroy();
+           //this._fruit=true;
+           fruit.setVelocity(0,0);
            this.fruit.destroy();
+           this.fruit= this.add.image(config.width/2, config.height/2+10 , "chocolate");
+           
         }, null, this);
 
         this.physics.add.overlap(this.food, this.cashier, function (food, cashier) {
@@ -174,9 +182,10 @@ class decorating extends Phaser.Scene{
             //cashier.destroy();
             this.count++;
             //this.food.anims.play('milk');
-           this.scoreText.setText('SCORE:'+this.count);
+           //this.scoreText.setText('SCORE:'+this.count);
            this.food.destroy();
            //this.food.setVelocity(0,0);
+           this.add.image(config.width/2-20, config.height/2+20, "strawberry");
            
         }, null, this);
 
@@ -184,40 +193,45 @@ class decorating extends Phaser.Scene{
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+         //  this.scoreText.setText('SCORE:'+this.count);
            
            this.salt.destroy();
+           this.add.image(config.width/2, config.height/2-60 , "candle");
         }, null, this);
 
         this.physics.add.overlap(this.bp, this.cashier, function (bp, cashier) {
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+         //  this.scoreText.setText('SCORE:'+this.count);
            
            this.bp.destroy();
+           this.add.image(config.width/2+30, config.height/2-30, "cookie");
         }, null, this);
 
         this.physics.add.overlap(this.soda, this.cashier, function (soda, cashier) {
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+           //this.scoreText.setText('SCORE:'+this.count);
            
            this.soda.destroy();
+           this.add.image(config.width/2+30, config.height/2, "carrot");
         }, null, this);
 
         this.physics.add.overlap(this.vanilla, this.cashier, function (vanilla, cashier) {
             
             //cashier.destroy();
             this.count++;
-           this.scoreText.setText('SCORE:'+this.count);
+          // this.scoreText.setText('SCORE:'+this.count);
            
            this.vanilla.destroy();
+           this.add.image(config.width/2-30, config.height/2-30, "cherry");
         }, null, this);
 
 
-        if(Phaser.Input.Keyboard.JustDown(keySPACE) && this.count == 6){
+        if(this.count == 6){
+            this.music.stop();
             this.scene.start('gradeScene', this.time);
         }
     }

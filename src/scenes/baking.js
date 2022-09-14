@@ -9,6 +9,7 @@ class baking extends Phaser.Scene{
         this.load.image('a','invisible_block.png');
         this.load.image('rd', 'red_block.png');
         this.load.image('bar','bar.png');
+        this.load.audio('sfx', 'sfx.wav');
 
         this.load.image('safeZone', 'safeZone.png');
         this.load.image('dangerBar', 'dangerBar.png');
@@ -22,38 +23,46 @@ class baking extends Phaser.Scene{
 
     create(data){
         //this.add.image(600,40,'background');
-        var position_value = Phaser.Math.Between(0, 600);
-        this.moving_speed=640;
+        var position_value = Phaser.Math.Between(0, 1024);
+        this.moving_speed=840;
         this.a = false;
         this.count=0;
         keySPACE = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
         let scoreConfig = {
-            fontFamily: 'serif',
-            fontSize: '16px',
-            backgroundColor: '#ADD8E6',
-            color: '#000000',
+            fontFamily: 'Pangolin',
+            fontSize: '20px',
+            color: '#F8B88B',
             align: 'right',
+            stroke: '#FF6700',
+            strokeThickness: 6, 
+            fixedWidth: 0,
             padding: {
                 top: 10,
                 bottom: 10,
-            },
+            }, 
             //fixedWidth: 
         }
 
-        this.baking = this.add.image(config.width/2, config.height/2, 'bake');
+        this.sfx = this.sound.add('sfx', {mute: false, volume: 1.0, rate: 1, loop: false});
+
+        this.music = this.sound.add('menu_bgm', {mute: false, volume: 1.0, rate: 1, loop: true});
+        this.music.play();
+
+        this.bg = this.add.image(0, 0, 'kitchenTable').setOrigin(0);
+        this.baking = this.add.sprite(config.width/2, config.height/2, 'bake');
 
         this.anims.create({
             key: 'bake',
             frames: this.anims.generateFrameNumbers('bake', {frames: [0, 1, 2, 3]}),
-            framerate: 8,
+            frameRate: 8,
             repeat: 0
         });
 
 
         
-        this.block = this.add.image(300,40,'dangerBar');
+        this.block = this.add.image(512,40,'dangerBar');
         this.rd=this.physics.add.image(position_value,40,'safeZone');
-        this.mb=this.physics.add.image(300,40,'movingBlock');
+        this.mb=this.physics.add.image(300,30,'movingBlock');
 
         this.scoreText=this.add.text(20,90,'SCORE:0', scoreConfig);
         this.physics.add.collider(this.mb,this.i_1);
@@ -77,7 +86,8 @@ class baking extends Phaser.Scene{
 
         this.a = this.mb.body.touching.none ? false :true;
         if(Phaser.Input.Keyboard.JustDown(keySPACE) && this.a){
-            //this.baking.anims.play('bake');
+            this.baking.anims.play('bake');
+            this.sfx.play();
             //this.scene.start('testScene');//change this <-
             this.mb.setPosition(330,40);
             this.rd.setPosition(Phaser.Math.Between(0, 600),40);
@@ -89,6 +99,7 @@ class baking extends Phaser.Scene{
         }
 
         if(this.count == 5){
+            this.music.stop();
             this.scene.start('decoratingScene', this.time);    
         }
     }

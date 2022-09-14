@@ -34,20 +34,24 @@ let config = {
 };
 
 let scoreConfig = {
-    fontFamily: 'serif',
-    fontSize: '16px',
-    backgroundColor: '#ADD8E6',
-    color: '#000000',
+    fontFamily: 'Pangolin',
+    fontSize: '20px',
+    color: '#F8B88B',
     align: 'right',
+    stroke: '#FF6700',
+    strokeThickness: 6, 
+    fixedWidth: 0,
     padding: {
         top: 10,
         bottom: 10,
-    },
+        }, 
+    };
     //fixedWidth: 
-}
+
 this.time = 0;
 this.gameOver = false;
 this.playerGrade == 100;
+this.music;
 
 let game = new Phaser.Game(config);
 
